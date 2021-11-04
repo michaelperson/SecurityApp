@@ -1,4 +1,6 @@
-﻿using DataAccess.DAL.Entities;
+﻿using DataAccess.DAL;
+using DataAccess.DAL.Entities;
+using DataAccess.DAL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SecurityApp.Models;
@@ -14,10 +16,11 @@ namespace SecurityApp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private IUnitOfWork _uow;
+        public HomeController(ILogger<HomeController> logger, IUnitOfWork uow)
         {
             _logger = logger;
+            this._uow = uow;
         }
 
         public IActionResult Index()
@@ -48,7 +51,7 @@ namespace SecurityApp.Controllers
         {
             if(ModelState.IsValid)
             {
-                //traitement db
+              List<UserEntity> Lu =  _uow.UserRepository.GetAll().ToList();
             }
             return View("Info", user);
         }

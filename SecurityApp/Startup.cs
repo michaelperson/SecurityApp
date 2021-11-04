@@ -1,3 +1,5 @@
+using DataAccess.DAL;
+using DataAccess.DAL.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -23,6 +25,10 @@ namespace SecurityApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Injection des mes deux services unitofwork pour définir un accès db different suivant le "groupe"
+            services.AddScoped<IAdminUnitOfWork, UnitOfWork>(m => new UnitOfWork(Configuration.GetConnectionString("AdminCnstr")));
+            services.AddScoped<IUnitOfWork, UnitOfWork>(m=> new UnitOfWork(Configuration.GetConnectionString("UserCnstr")));
+
             services.AddControllersWithViews();
         }
 

@@ -17,6 +17,7 @@ namespace DataAccess.DAL.Repositories
         {
 
         }
+        
         protected override string SelectCommand
         {
             get
@@ -29,7 +30,7 @@ namespace DataAccess.DAL.Repositories
         {
             get
             {
-                return "INSERT INTO Users VALUES ('{0}', '{1}','{2}', '{3}')";
+                return "INSERT INTO Users VALUES (@Login, @Password,@Email, @Role)";
             }
         }
 
@@ -37,7 +38,7 @@ namespace DataAccess.DAL.Repositories
         {
             get
             {
-                return "Update Users set Login='{0}',Password='{1}',Email='{2}', 'Role'={3} WHERE ID={4}";
+                return "Update Users set Login=@Login,Password=@Password,Email=@Email, 'Role'=@Role WHERE ID=@ID";
             }
         }
 
@@ -45,35 +46,15 @@ namespace DataAccess.DAL.Repositories
         {
             get
             {
-                return "DELETE FROM Users WHERE ID={0}";
+                return "DELETE FROM Users WHERE ID=@ID";
             }
         }
 
-        public bool Add(UserEntity Entity)
+         
+        public UserEntity Auth(string login, string password )
         {
-
-            return base.Add(string.Format(InsertCommand, Entity.Login, Entity.Password, Entity.Email, Entity.Role));
-        }
-
-
-        public bool Delete(UserEntity Entity)
-        {
-            return base.Delete(Entity.ID);
-        }
-
-
-        public  bool Update(UserEntity Entity)
-        {
-
-            return this.Update(string.Format(UpdateCommand,Entity.Login, Entity.Password,Entity.Email,Entity.Role, Entity.ID));
-        }
-
-        public List<UserEntity> Auth(string login, string password, out string Query)
-        {
-          
-
-            Query = $"{SelectCommand} WHERE login='{login}' and Password='{password}'";
-            return base.GetAll(Query).ToList();
+             
+            return base.GetAll().Where(u=>u.Login==login && u.Password==password).FirstOrDefault();
         }
 
         
