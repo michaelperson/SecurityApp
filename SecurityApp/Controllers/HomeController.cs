@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DataAccess.DAL.Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SecurityApp.Models;
 using System;
@@ -32,6 +33,23 @@ namespace SecurityApp.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken] //Permet de vérifier que le token de vérification est envoyé et valides
+        public IActionResult Login(UserEntity user)
+        {
+            if(ModelState.IsValid)
+            {
+                //traitement db
+            }
+            return View();
         }
     }
 }
