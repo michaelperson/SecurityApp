@@ -29,4 +29,19 @@ INSERT INTO Parametres  ([ID],[Name], [Value]) VALUES(1,'Taxes', 'MAX');
 INSERT INTO Parametres  ([ID],[Name], [Value]) VALUES(2,'Key', '15236E8745Abcf'); 
 SET IDENTITY_INSERT Parametres OFF
 GO
-	 
+USE [master]
+GO
+CREATE LOGIN [AspUser] WITH PASSWORD=N'Test1234=', DEFAULT_DATABASE=[DataAccessSecurity], CHECK_EXPIRATION=OFF, CHECK_POLICY=ON
+GO
+USE [DataAccessSecurity]
+GO
+CREATE USER [AspUser] FOR LOGIN [AspUser]
+GO
+USE [DataAccessSecurity]
+GO
+ALTER ROLE [db_datareader] ADD MEMBER [AspUser]
+GO
+USE [DataAccessSecurity]
+GO
+ALTER ROLE [db_datawriter] ADD MEMBER [AspUser]
+GO

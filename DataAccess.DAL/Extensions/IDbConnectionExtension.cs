@@ -11,7 +11,7 @@ namespace DataAccess.DAL.Extensions
 {
     public static class IDbConnectionExtension
     {
-        public static T QuerySingleOrDefault<T>(this IDbConnection DbCon, string Command, object parameters)
+        public static T QuerySingleOrDefault<T>(this IDbConnection DbCon, string Command, object parameters, IDbTransaction transaction)
         {
             if (DbCon == null) throw new InvalidOperationException("Your Connection must be set");
 
@@ -22,6 +22,10 @@ namespace DataAccess.DAL.Extensions
 
             try
             {
+                if (transaction != null)
+                {
+                    myCommand.Transaction = transaction;
+                }
                 myCommand.CommandText = Command;
                 if (parameters != null)
                 {
@@ -43,7 +47,7 @@ namespace DataAccess.DAL.Extensions
             }
             return retour;
         }
-        public static IEnumerable<T> Query<T>(this IDbConnection DbCon, string Command, object parameters)
+        public static IEnumerable<T> Query<T>(this IDbConnection DbCon, string Command, object parameters, IDbTransaction transaction)
         {
             if (DbCon == null) throw new InvalidOperationException("Your Connection must be set");
 
@@ -57,6 +61,10 @@ namespace DataAccess.DAL.Extensions
             IDbCommand myCommand = DbCon.CreateCommand();
             try
             {
+                if (transaction != null)
+                {
+                    myCommand.Transaction = transaction;
+                }
                 myCommand.CommandText = Command;
                 if (parameters != null)
                 {
@@ -107,7 +115,7 @@ namespace DataAccess.DAL.Extensions
                 {
                     transaction.Rollback();
                 }
-                Debug.WriteLine(e.Message);
+                throw;
 
             }
             return retour;

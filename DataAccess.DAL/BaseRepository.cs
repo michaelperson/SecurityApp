@@ -1,5 +1,4 @@
-﻿using DataAccess.DAL.Extensions;
-using DataAccess.DAL.Extensions.Insecure;
+﻿using DataAccess.DAL.Extensions; 
 using DataAccess.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -28,7 +27,7 @@ namespace DataAccess.DAL
         {
             get
             {
-                return string.Format("{0} where  = @id", SelectCommand); 
+                return string.Format("{0} where  ID = @id", SelectCommand); 
 
             }
         }
@@ -46,11 +45,11 @@ namespace DataAccess.DAL
 
         public virtual T GetOne(TKey id)
         {
-            return _connection.QuerySingleOrDefault<T>(OneCommand, null);
+            return _connection.QuerySingleOrDefault<T>(OneCommand, null, _transaction);
         }
         public virtual IEnumerable<T> GetAll()
         {
-            return _connection.Query<T>(SelectCommand, null);
+            return _connection.Query<T>(SelectCommand, null, _transaction);
         }
 
          

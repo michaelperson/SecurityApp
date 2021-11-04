@@ -12,26 +12,34 @@ using System.Threading.Tasks;
 
 namespace DataAccess.DAL
 {
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWork : IUnitOfWork, IAdminUnitOfWork
     {
         private IDbConnection _connection;
         private IDbTransaction _transaction;
 
-        public InsecureIRepository<UserEntity, int> UserRepository
+        public IRepository<UserEntity, int> UserRepository
         {
             get
             {
                 return new UserRepository(_transaction);
             }
         }
-        public InsecureIRepository<InfoPersoEntity, int> InfoPersoRepository
+        public IRepository<InfoPersoEntity, int> InfoPersoRepository
         {
             get
             {
                 return new InfoPersoRepository(_transaction);
             }
         }
+        public IRepository<ParametresEntity, int> ParametresRepository
+        {
+            get
+            {
+                return new ParametresRepository(_transaction);
+            }
+        }
 
+        
 
         public UnitOfWork(string connectionString)
         {

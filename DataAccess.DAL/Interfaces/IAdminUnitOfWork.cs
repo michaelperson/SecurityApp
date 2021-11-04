@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace DataAccess.DAL.Interfaces
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IAdminUnitOfWork : IDisposable
     {
         IRepository<UserEntity, int> UserRepository { get; }
         IRepository<InfoPersoEntity, int> InfoPersoRepository { get; }
+        
         bool Commit();
     }
 
