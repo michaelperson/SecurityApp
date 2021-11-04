@@ -49,7 +49,7 @@ namespace SecurityApp.Controllers
             {
                 //traitement db
             }
-            return View();
+            return View("Info", user);
         }
     }
 }
