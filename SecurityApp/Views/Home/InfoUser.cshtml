@@ -1,0 +1,60 @@
+﻿@model DataAccess.DAL.Entities.InfoPersoEntity
+
+@{
+    ViewData["Title"] = "InfoUser";
+}
+
+<h1>InfoUser</h1>
+
+<div>
+    <h4>InfoPersoEntity</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ID)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ID)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IsMarried)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IsMarried)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CompteEnBanque)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CompteEnBanque)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.NbEnfants)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NbEnfants)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Rue)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Rue)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Ville)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Ville)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdUser)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdUser)
+        </dd>
+    </dl>
+</div>
+<div>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    <a asp-action="Index">Back to List</a>
+</div>

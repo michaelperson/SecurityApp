@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SecurityApp.Infra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,7 @@ namespace SecurityApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
             //Injection des mes deux services unitofwork pour définir un accès db different suivant le "groupe"
             services.AddScoped<IAdminUnitOfWork, UnitOfWork>(m => new UnitOfWork(Configuration.GetConnectionString("AdminCnstr")));
             services.AddScoped<IUnitOfWork, UnitOfWork>(m=> new UnitOfWork(Configuration.GetConnectionString("UserCnstr")));
@@ -34,13 +36,9 @@ namespace SecurityApp
             services.AddSession(options =>
             {
                 options.Cookie.HttpOnly = true;
-                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.IdleTimeout = TimeSpan.FromMinutes(10);
             });
-            services.AddTransient(typeof(ISession), serviceProvider =>
-            {
-                var httpContextAccessor = serviceProvider.GetService<IHttpContextAccessor>();
-                return httpContextAccessor.HttpContext.Session;
-            });
+            services.AddHttpContextAccessor();
             services.AddControllersWithViews();
         }
 
@@ -57,12 +55,15 @@ namespace SecurityApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.UseSession();
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {
