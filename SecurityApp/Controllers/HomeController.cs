@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace SecurityApp.Controllers
 {
+    [AutoValidateAntiforgeryToken] //Pour que TOUS les forms valident le forgery par défaut pour ce controller
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
