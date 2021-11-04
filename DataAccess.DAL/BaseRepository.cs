@@ -1,4 +1,5 @@
-﻿using DataAccess.DAL.Extensions.Insecure;
+﻿using DataAccess.DAL.Extensions;
+using DataAccess.DAL.Extensions.Insecure;
 using DataAccess.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.DAL
 {
-    public abstract class BaseRepository<T, TKey> : InsecureIRepository<T, TKey>
+    public abstract class BaseRepository<T, TKey> : IRepository<T, TKey>
        where T : IEntities<TKey>, new()
         where TKey : struct
     {
@@ -23,7 +24,16 @@ namespace DataAccess.DAL
         protected abstract string InsertCommand { get; }
         protected abstract string UpdateCommand { get; }
         protected abstract string DeleteCommand { get; }
-       
+        protected virtual string OneCommand
+        {
+            get
+            {
+                return string.Format("{0} where  = @id", SelectCommand); 
+
+            }
+        }
+
+
 
 
         public BaseRepository(IDbTransaction transaction)
@@ -36,17 +46,21 @@ namespace DataAccess.DAL
 
         public virtual T GetOne(TKey id)
         {
-            return _connection.QuerySingleOrDefault<T>(string.Format(SelectCommand +" WHERE ID={0}",id),_transaction);
+            return _connection.QuerySingleOrDefault<T>(OneCommand, null);
         }
-        public virtual IEnumerable<T> GetAll(string selectCommand)
+        public virtual IEnumerable<T> GetAll()
         {
-            return _connection.Query<T>(selectCommand,_transaction);
+            return _connection.Query<T>(SelectCommand, null);
         }
-        public virtual bool Add(string insertCommand)
+
+         
+        public virtual bool Add(T Entity)
         {
             try
             {
-                _connection.ExecuteScalar<TKey>(insertCommand, _transaction);
+                _connection.ExecuteScalar<TKey>(InsertCommand
+                                                          , FieldToCollumn(Entity)
+                                                          , _transaction);
 
                 return true;
             }
@@ -57,11 +71,13 @@ namespace DataAccess.DAL
                 return false;
             }
         }
-        public virtual bool Update(string updateCommand)
+        public virtual bool Update(T Entity)
         {
             try
             {
-                _connection.Execute(updateCommand, _transaction);
+                _connection.Execute(UpdateCommand
+                                                                   , FieldToCollumn(Entity)
+                                                                   , _transaction);
                 return true;
             }
             catch (Exception ex)
@@ -76,7 +92,11 @@ namespace DataAccess.DAL
         {
             try
             {
-                _connection.Execute(string.Format(DeleteCommand + " WHERE ID={0}", id), _transaction);
+                _connection.Execute(DeleteCommand,
+                                       new
+                                       {
+                                           Id = id
+                                       }, _transaction);
                 return true;
             }
             catch (Exception)
@@ -86,7 +106,25 @@ namespace DataAccess.DAL
         }
 
 
-         
+        protected object FieldToCollumn(T element)
+        {
+            var eo = new ExpandoObject();
+            var eoColl = (ICollection<KeyValuePair<string, object>>)eo;
+
+            foreach (PropertyInfo pInfo in typeof(T).GetProperties())
+            {
+                if (pInfo.Name != "Id")
+                {
+                    eoColl.Add(new KeyValuePair<string, object>(pInfo.Name, pInfo.GetValue(element)));
+                }
+            }
+
+            dynamic eoDynamic = eo;
+
+            return eoDynamic;
+        }
+
+
 
     }
 }

@@ -28,7 +28,7 @@ namespace DataAccess.DAL.Repositories
         {
             get
             {
-                return "INSERT INTO InfosPerso VALUES ({0},'{1}',{2},'{3}','{4}',{5})";
+                return "INSERT INTO InfosPerso VALUES (@IsMarried,@CompteEnBanque,@NbEnfants,@Rue,@Ville,@IdUser)";
             }
         }
 
@@ -36,7 +36,7 @@ namespace DataAccess.DAL.Repositories
         {
             get
             {
-                return "Update InfosPerso set IsMarried={0},CompteEnBanque={1}, NbEnfants={2}, Rue={3}, Ville={4},  IdUser={5} WHERE ID={6}";
+                return "Update InfosPerso set IsMarried=@IsMarried,CompteEnBanque=@CompteEnBanque, NbEnfants=@NbEnfants, Rue=@Rue, Ville=@Ville,  IdUser=@IdUser WHERE ID=@ID";
             }
         }
 
@@ -44,35 +44,18 @@ namespace DataAccess.DAL.Repositories
         {
             get
             {
-                return "DELETE FROM InfosPerso WHERE ID={0}";
+                return "DELETE FROM InfosPerso WHERE ID=@ID";
             }
         }
 
-        public bool Add(InfoPersoEntity Entity)
-        {
-
-            return base.Add(string.Format(InsertCommand, Entity.IsMarried, Entity.CompteEnBanque, Entity.NbEnfants, Entity.Rue, Entity.Ville, Entity.IdUser));
-        }
-
-
-        public bool Delete(InfoPersoEntity Entity)
-        {
-            return base.Delete(Entity.ID);
-        }
-
-
-        public  bool Update(InfoPersoEntity Entity)
-        {
-
-            return this.Update(string.Format(UpdateCommand, Entity.IsMarried, Entity.CompteEnBanque, Entity.NbEnfants, Entity.Rue, Entity.Ville, Entity.IdUser, Entity.ID));
-        }
+         
 
         
 
-        public InfoPersoEntity GetInfoFromUser(int id, out string query)
+        public InfoPersoEntity GetInfoFromUser(int id)
         {
-            query = $"{SelectCommand} WHERE IdUser={id}";
-           return base.GetAll(query).FirstOrDefault();
+            
+           return base.GetAll().Where(u=>u.IdUser==id).FirstOrDefault();
         }
       
 
