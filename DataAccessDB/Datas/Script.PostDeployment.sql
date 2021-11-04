@@ -45,3 +45,15 @@ USE [DataAccessSecurity]
 GO
 ALTER ROLE [db_datawriter] ADD MEMBER [AspUser]
 GO
+USE [master]
+GO
+CREATE LOGIN [ASPAdmin] WITH PASSWORD=N'Test1234=', DEFAULT_DATABASE=[DataAccessSecurity], CHECK_EXPIRATION=OFF, CHECK_POLICY=ON
+GO
+USE [DataAccessSecurity]
+GO
+CREATE USER [ASPAdmin] FOR LOGIN [ASPAdmin]
+GO
+USE [DataAccessSecurity]
+GO
+ALTER ROLE [db_owner] ADD MEMBER [ASPAdmin]
+GO

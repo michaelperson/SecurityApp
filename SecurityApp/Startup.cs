@@ -2,6 +2,7 @@ using DataAccess.DAL;
 using DataAccess.DAL.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +29,18 @@ namespace SecurityApp
             //Injection des mes deux services unitofwork pour définir un accès db different suivant le "groupe"
             services.AddScoped<IAdminUnitOfWork, UnitOfWork>(m => new UnitOfWork(Configuration.GetConnectionString("AdminCnstr")));
             services.AddScoped<IUnitOfWork, UnitOfWork>(m=> new UnitOfWork(Configuration.GetConnectionString("UserCnstr")));
-
+            //Ajout des sessions
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+            });
+            services.AddTransient(typeof(ISession), serviceProvider =>
+            {
+                var httpContextAccessor = serviceProvider.GetService<IHttpContextAccessor>();
+                return httpContextAccessor.HttpContext.Session;
+            });
             services.AddControllersWithViews();
         }
 
